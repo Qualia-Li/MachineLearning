@@ -1,0 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+X1 = np.random.normal(4,2,100)
+X2 = 0.5*X1+np.random.normal(3,3,100)
+
+# (a)
+mean = np.array([[np.mean(X1)],[np.mean(X2)]])
+print("Mean:")
+print(mean)
+
+# (b)
+xStack = np.vstack((X1,X2))
+cov = np.cov(xStack)
+print("Cov:")
+print(cov)
+
+# (c)
+eigenValue, eigenVector = np.linalg.eig(cov)
+print("Eigenvalues")
+print(eigenValue)
+print("Eigenvectors")
+print(eigenVector)
+
+# (d)
+v1 = np.array([mean[0],mean[1],eigenValue[0]*eigenVector[0][0],eigenValue[0]*eigenVector[1][0]])
+v2 = np.array([mean[0],mean[1],eigenValue[1]*eigenVector[0][1],eigenValue[1]*eigenVector[1][1]])
+plot = np.array([v1,v2])
+X,Y,U,V = zip(*plot)
+fig1 = plt.figure(1)
+ax1 = fig1.gca()
+ax1.plot(X1, X2, 'o')
+ax1.quiver(X,Y,U,V,angles='xy',scale_units='xy',scale=1)
+ax1.axis([-15, 15, -15, 15])
+ax1.set_aspect('auto')
+fig1.savefig('d.png')
+
+# (e)
+fig2 = plt.figure(2)
+ax2 = fig2.gca()
+rot = np.dot(np.transpose(np.fliplr(eigenVector)),np.add(xStack,-mean))
+ax2.plot(rot[0][:],rot[1][:],'o')
+ax2.axis([-15, 15, -15, 15])
+ax2.set_aspect('auto')
+fig2.savefig('e.png')
